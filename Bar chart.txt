@@ -1,0 +1,133 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Data from tables
+sample_ids = ['IGW₁', 'IGW₂', 'IGW₃', 'IGW₄', 'IGW₅', 'IGW₆', 'IGW₇', 'IGW₈',
+              'EGW₁', 'EGW₂', 'EGW₃', 'EGW₄', 'EGW₅', 'EGW₆', 'EGW₇', 'EGW₈']
+
+# Groundwater data (from Table 4.3)
+gw_ingestion = [0.1026, 0.0246, 0.0805, 0.0386, 0.0622, 0.0952, 0.0758, 0.0423,
+                0.0879, 0.0845, 0.0866, 0.0225, 0.0461, 0.0902, 0.0597, 0.0635]
+gw_stomach = [0.0120, 0.0029, 0.0094, 0.0045, 0.0073, 0.0111, 0.0089, 0.0050,
+              0.0103, 0.0099, 0.0101, 0.0026, 0.0054, 0.0105, 0.0070, 0.0074]
+gw_inhalation = [0.0028, 0.0007, 0.0022, 0.0011, 0.0017, 0.0026, 0.0020, 0.0011,
+                 0.0024, 0.0023, 0.0023, 0.0006, 0.0012, 0.0024, 0.0016, 0.0017]
+gw_lungs = [0.00033, 0.00008, 0.00026, 0.00012, 0.00021, 0.00031, 0.00024, 0.00014,
+            0.00028, 0.00027, 0.00028, 0.00007, 0.00015, 0.00029, 0.00019, 0.00020]
+gw_elcr = [0.00037, 0.00008, 0.00029, 0.00014, 0.00022, 0.00034, 0.00027, 0.00013,
+           0.00032, 0.00032, 0.00031, 0.00008, 0.00017, 0.00032, 0.00022, 0.00023]
+
+# Surface water data (from Table 4.4)
+sw_ingestion = [0.0646, 0.0788, 0.0593, 0.0853, 0.0858, 0.0553, 0.0807, 0.0631,
+                0.0709, 0.0591, 0.0692, 0.0842, 0.0772, 0.0839, 0.0347, 0.0880]
+sw_stomach = [0.0076, 0.0092, 0.0069, 0.0100, 0.0100, 0.0065, 0.0094, 0.0074,
+              0.0083, 0.0069, 0.0081, 0.0098, 0.0090, 0.0098, 0.0041, 0.0103]
+sw_inhalation = [0.0017, 0.0021, 0.0016, 0.0023, 0.0023, 0.0015, 0.0022, 0.0017,
+                 0.0019, 0.0016, 0.0019, 0.0023, 0.0021, 0.0023, 0.0009, 0.0024]
+sw_lungs = [0.00021, 0.00025, 0.00019, 0.00027, 0.00027, 0.00018, 0.00026, 0.00020,
+            0.00023, 0.00019, 0.00022, 0.00027, 0.00025, 0.00027, 0.00011, 0.00028]
+sw_elcr = [0.00023, 0.00028, 0.00021, 0.00030, 0.00031, 0.00020, 0.00029, 0.00023,
+           0.00026, 0.00021, 0.00025, 0.00030, 0.00030, 0.00028, 0.00013, 0.00032]
+
+# Set up the plotting style
+plt.style.use('seaborn-v0_8')
+fig, axes = plt.subplots(2, 3, figsize=(24, 16))
+axes = axes.flatten()
+
+# Remove the last subplot since we only need 5
+fig.delaxes(axes[5])
+
+# Common settings for all plots
+bar_width = 0.35
+x_pos = np.arange(len(sample_ids))
+
+# Chart 1: Annual Effective Dose (Ingestion)
+axes[0].bar(x_pos - bar_width/2, gw_ingestion, bar_width, label='Ground Water', color='blue', alpha=0.7)
+axes[0].bar(x_pos + bar_width/2, sw_ingestion, bar_width, label='Surface Water', color='red', alpha=0.7)
+axes[0].set_title('Annual Effective Dose by Ingestion (mSv/y)', fontsize=14, fontweight='bold')
+axes[0].set_xlabel('Sample Location', fontsize=12)
+axes[0].set_ylabel('AED$_{ing}$ (mSv/y)', fontsize=12)
+axes[0].set_xticks(x_pos)
+axes[0].set_xticklabels(sample_ids, rotation=45, ha='right')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# Chart 2: Dose to Stomach
+axes[1].bar(x_pos - bar_width/2, gw_stomach, bar_width, label='Ground Water', color='blue', alpha=0.7)
+axes[1].bar(x_pos + bar_width/2, sw_stomach, bar_width, label='Surface Water', color='red', alpha=0.7)
+axes[1].set_title('Dose to Stomach (mSv/y)', fontsize=14, fontweight='bold')
+axes[1].set_xlabel('Sample Location', fontsize=12)
+axes[1].set_ylabel('D$_{stomach}$ (mSv/y)', fontsize=12)
+axes[1].set_xticks(x_pos)
+axes[1].set_xticklabels(sample_ids, rotation=45, ha='right')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+# Chart 3: Annual Effective Dose (Inhalation)
+axes[2].bar(x_pos - bar_width/2, gw_inhalation, bar_width, label='Ground Water', color='blue', alpha=0.7)
+axes[2].bar(x_pos + bar_width/2, sw_inhalation, bar_width, label='Surface Water', color='red', alpha=0.7)
+axes[2].set_title('Annual Effective Dose by Inhalation (mSv/y)', fontsize=14, fontweight='bold')
+axes[2].set_xlabel('Sample Location', fontsize=12)
+axes[2].set_ylabel('AED$_{inh}$ (mSv/y)', fontsize=12)
+axes[2].set_xticks(x_pos)
+axes[2].set_xticklabels(sample_ids, rotation=45, ha='right')
+axes[2].legend()
+axes[2].grid(True, alpha=0.3)
+
+# Chart 4: Dose to Lungs
+axes[3].bar(x_pos - bar_width/2, gw_lungs, bar_width, label='Ground Water', color='blue', alpha=0.7)
+axes[3].bar(x_pos + bar_width/2, sw_lungs, bar_width, label='Surface Water', color='red', alpha=0.7)
+axes[3].set_title('Dose to Lungs (mSv/y)', fontsize=14, fontweight='bold')
+axes[3].set_xlabel('Sample Location', fontsize=12)
+axes[3].set_ylabel('D$_{lungs}$ (mSv/y)', fontsize=12)
+axes[3].set_xticks(x_pos)
+axes[3].set_xticklabels(sample_ids, rotation=45, ha='right')
+axes[3].legend()
+axes[3].grid(True, alpha=0.3)
+
+# Chart 5: Excess Lifetime Cancer Risk
+axes[4].bar(x_pos - bar_width/2, gw_elcr, bar_width, label='Ground Water', color='blue', alpha=0.7)
+axes[4].bar(x_pos + bar_width/2, sw_elcr, bar_width, label='Surface Water', color='red', alpha=0.7)
+axes[4].set_title('Excess Lifetime Cancer Risk', fontsize=14, fontweight='bold')
+axes[4].set_xlabel('Sample Location', fontsize=12)
+axes[4].set_ylabel('ELCR', fontsize=12)
+axes[4].set_xticks(x_pos)
+axes[4].set_xticklabels(sample_ids, rotation=45, ha='right')
+axes[4].legend()
+axes[4].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('all_radiation_dose_charts.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Also create individual high-quality charts
+charts_data = [
+    ('Annual Effective Dose by Ingestion', 'AED$_{ing}$ (mSv/y)', gw_ingestion, sw_ingestion, 'ingestion_dose.png'),
+    ('Dose to Stomach', 'D$_{stomach}$ (mSv/y)', gw_stomach, sw_stomach, 'stomach_dose.png'),
+    ('Annual Effective Dose by Inhalation', 'AED$_{inh}$ (mSv/y)', gw_inhalation, sw_inhalation, 'inhalation_dose.png'),
+    ('Dose to Lungs', 'D$_{lungs}$ (mSv/y)', gw_lungs, sw_lungs, 'lungs_dose.png'),
+    ('Excess Lifetime Cancer Risk', 'ELCR', gw_elcr, sw_elcr, 'elcr_chart.png')
+]
+
+for title, ylabel, gw_data, sw_data, filename in charts_data:
+    plt.figure(figsize=(16, 8))
+    plt.bar(x_pos - bar_width/2, gw_data, bar_width, label='Ground Water', color='blue', alpha=0.7)
+    plt.bar(x_pos + bar_width/2, sw_data, bar_width, label='Surface Water', color='red', alpha=0.7)
+    plt.title(title, fontsize=16, fontweight='bold')
+    plt.xlabel('Sample Location', fontsize=14)
+    plt.ylabel(ylabel, fontsize=14)
+    plt.xticks(x_pos, sample_ids, rotation=45, ha='right')
+    plt.legend(fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.close()
+
+print("All 5 charts created successfully!")
+print("Files saved:")
+print("1. 'all_radiation_dose_charts.png' - All 5 charts in one figure")
+print("2. 'ingestion_dose.png' - Annual Effective Dose by Ingestion")
+print("3. 'stomach_dose.png' - Dose to Stomach")
+print("4. 'inhalation_dose.png' - Annual Effective Dose by Inhalation")
+print("5. 'lungs_dose.png' - Dose to Lungs")
+print("6. 'elcr_chart.png' - Excess Lifetime Cancer Risk")

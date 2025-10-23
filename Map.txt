@@ -1,0 +1,249 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import geopandas as gpd
+from shapely.geometry import Point
+import numpy as np
+
+# Create DataFrame from your data
+data = {
+    'Sample': ['ISW1', 'ISW2', 'ISW3', 'ISW4', 'ISW5', 'ISW6', 'ISW7', 'ISW8',
+               'IGW1', 'IGW2', 'IGW3', 'IGW4', 'IGW5', 'IGW6', 'IGW7', 'IGW8',
+               'ESW1', 'ESW2', 'ESW3', 'ESW4', 'ESW5', 'ESW6', 'ESW7', 'ESW8',
+               'EGW1', 'EGW2', 'EGW3', 'EGW4', 'EGW5', 'EGW6', 'EGW7', 'EGW8'],
+    'Description': ['Inye Surface water']*8 + ['Inye Ground Water']*8 + ['Enjema Surface Water']*8 + ['Enjema Ground Water']*8,
+    'Longitude': [7.193878542, 7.263749598, 7.286419069, 7.130022454, 7.22122946, 7.26460041, 7.158036813, 7.234241233,
+                  7.234241233, 7.16175318, 7.203688801, 7.256095585, 7.161743868, 7.176938107, 7.292714979, 7.13091486,
+                  7.327498765, 7.355454374, 7.437639661, 7.388244412, 7.331912809, 7.310683361, 7.302275659, 7.431964462,
+                  7.319721641, 7.312154709, 7.367855734, 7.365123231, 7.335906467, 7.40379866, 7.380257095, 7.362600921],
+    'Latitude': [9.058735059, 9.112463414, 9.088913932, 9.089801071, 9.041906291, 9.047920469, 9.056891068, 9.063596056,
+                 9.063596056, 9.117041159, 9.074236403, 9.080430481, 9.078188283, 9.038780217, 9.038244409, 9.050746001,
+                 9.163177508, 9.172846366, 9.113572067, 9.107686676, 9.116724955, 9.097597433, 9.131858819, 9.097807626,
+                 9.149094608, 9.117355533, 9.102642054, 9.152457688, 9.135642285, 9.098438203, 9.133750552, 9.114833222]
+}
+
+df = pd.DataFrame(data)
+
+# Convert to GeoDataFrame
+geometry = [Point(xy) for xy in zip(df['Longitude'], df['Latitude'])]
+gdf = gpd.GeoDataFrame(df, geometry=geometry, crs="EPSG:4326")
+
+# Separate data for Inye and Enjema
+inye_gdf = gdf[gdf['Description'].str.contains('Inye')]
+enjema_gdf = gdf[gdf['Description'].str.contains('Enjema')]
+
+# Create subplots with NO background map
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(22, 10))
+
+# Color and marker mapping
+color_map = {
+    'Inye Surface water': 'blue',
+    'Inye Ground Water': 'cyan', 
+    'Enjema Surface Water': 'red',
+    'Enjema Ground Water': 'orange'
+}
+
+marker_map = {
+    'Inye Surface water': 'o',
+    'Inye Ground Water': '^',
+    'Enjema Surface Water': 'o',
+    'Enjema Ground Water': '^'
+}
+
+# --- INYE MAP ---
+# Plot Inye samples and add labels
+for desc in ['Inye Surface water', 'Inye Ground Water']:
+    subset = inye_gdf[inye_gdf['Description'] == desc]
+    if len(subset) > 0:
+        # Plot points
+        subset.plot(ax=ax1, 
+                   color=color_map[desc],
+                   marker=marker_map[desc],
+                   markersize=120,
+                   label=desc,
+                   alpha=0.8,
+                   edgecolor='black',
+                   linewidth=1.5)
+        
+        # Add labels for each point
+        for idx, row in subset.iterrows():
+            ax1.annotate(row['Sample'], 
+                        (row.geometry.x, row.geometry.y),
+                        xytext=(8, 8), 
+                        textcoords="offset points",
+                        fontsize=10,
+                        fontweight='bold',
+                        bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9, edgecolor='black', linewidth=0.5),
+                        zorder=1000)
+
+# Set nice bounds for Inye area with some padding
+inye_buffer = 0.02  # degrees
+ax1.set_xlim(inye_gdf.total_bounds[0] - inye_buffer, inye_gdf.total_bounds[2] + inye_buffer)
+ax1.set_ylim(inye_gdf.total_bounds[1] - inye_buffer, inye_gdf.total_bounds[3] + inye_buffer)
+
+ax1.set_title('Inye Area: Water Sample Locations', fontsize=16, fontweight='bold')
+ax1.set_xlabel('Longitude', fontsize=12)
+ax1.set_ylabel('Latitude', fontsize=12)
+ax1.grid(True, alpha=0.3)
+
+# Add scale text for Inye (approximate)
+ax1.text(0.02, 0.02, 'Scale: ~2 km', transform=ax1.transAxes, fontsize=10,
+         bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.8))
+
+# Add north arrow for Inye
+ax1.text(0.95, 0.95, 'N', transform=ax1.transAxes, fontsize=16, fontweight='bold',
+        ha='center', va='center')
+ax1.plot([0.95, 0.95], [0.90, 0.95], transform=ax1.transAxes, color='black', linewidth=2)
+
+# --- ENJEMA MAP ---
+# Plot Enjema samples and add labels
+for desc in ['Enjema Surface Water', 'Enjema Ground Water']:
+    subset = enjema_gdf[enjema_gdf['Description'] == desc]
+    if len(subset) > 0:
+        # Plot points
+        subset.plot(ax=ax2, 
+                   color=color_map[desc],
+                   marker=marker_map[desc],
+                   markersize=120,
+                   label=desc,
+                   alpha=0.8,
+                   edgecolor='black',
+                   linewidth=1.5)
+        
+        # Add labels for each point
+        for idx, row in subset.iterrows():
+            ax2.annotate(row['Sample'], 
+                        (row.geometry.x, row.geometry.y),
+                        xytext=(8, 8), 
+                        textcoords="offset points",
+                        fontsize=10,
+                        fontweight='bold',
+                        bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9, edgecolor='black', linewidth=0.5),
+                        zorder=1000)
+
+# Set nice bounds for Enjema area with some padding
+enjema_buffer = 0.02  # degrees
+ax2.set_xlim(enjema_gdf.total_bounds[0] - enjema_buffer, enjema_gdf.total_bounds[2] + enjema_buffer)
+ax2.set_ylim(enjema_gdf.total_bounds[1] - enjema_buffer, enjema_gdf.total_bounds[3] + enjema_buffer)
+
+ax2.set_title('Enjema Area: Water Sample Locations', fontsize=16, fontweight='bold')
+ax2.set_xlabel('Longitude', fontsize=12)
+ax2.set_ylabel('Latitude', fontsize=12)
+ax2.grid(True, alpha=0.3)
+
+# Add scale text for Enjema (approximate)
+ax2.text(0.02, 0.02, 'Scale: ~2 km', transform=ax2.transAxes, fontsize=10,
+         bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.8))
+
+# Add north arrow for Enjema
+ax2.text(0.95, 0.95, 'N', transform=ax2.transAxes, fontsize=16, fontweight='bold',
+        ha='center', va='center')
+ax2.plot([0.95, 0.95], [0.90, 0.95], transform=ax2.transAxes, color='black', linewidth=2)
+
+# Create combined legend
+legend_elements = []
+for desc, color in color_map.items():
+    marker = 'o' if 'Surface' in desc else '^'
+    legend_elements.append(plt.Line2D([0], [0], 
+                                    marker=marker, 
+                                    color='w', 
+                                    markerfacecolor=color,
+                                    markersize=10,
+                                    label=desc,
+                                    markeredgecolor='black'))
+
+# Add legend to the figure
+fig.legend(handles=legend_elements, loc='upper center', 
+           bbox_to_anchor=(0.5, 0.05), ncol=4, fontsize=12, framealpha=0.9)
+
+plt.tight_layout()
+plt.subplots_adjust(bottom=0.15)  # Make space for the legend
+
+# Save high-quality images
+plt.savefig('separate_areas_clean_map.png', dpi=300, bbox_inches='tight', facecolor='white')
+plt.savefig('separate_areas_clean_map.pdf', bbox_inches='tight', facecolor='white')
+
+# Also save individual maps with clean backgrounds
+# Inye individual map
+fig1, ax1_ind = plt.subplots(1, 1, figsize=(12, 10))
+
+for desc in ['Inye Surface water', 'Inye Ground Water']:
+    subset = inye_gdf[inye_gdf['Description'] == desc]
+    if len(subset) > 0:
+        subset.plot(ax=ax1_ind, 
+                   color=color_map[desc],
+                   marker=marker_map[desc],
+                   markersize=120,
+                   label=desc,
+                   alpha=0.8,
+                   edgecolor='black',
+                   linewidth=1.5)
+        
+        # Add labels
+        for idx, row in subset.iterrows():
+            ax1_ind.annotate(row['Sample'], 
+                           (row.geometry.x, row.geometry.y),
+                           xytext=(8, 8), 
+                           textcoords="offset points",
+                           fontsize=10,
+                           fontweight='bold',
+                           bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9, edgecolor='black', linewidth=0.5))
+
+ax1_ind.set_xlim(inye_gdf.total_bounds[0] - inye_buffer, inye_gdf.total_bounds[2] + inye_buffer)
+ax1_ind.set_ylim(inye_gdf.total_bounds[1] - inye_buffer, inye_gdf.total_bounds[3] + inye_buffer)
+ax1_ind.set_title('Inye Area: Water Sample Locations', fontsize=16, fontweight='bold')
+ax1_ind.set_xlabel('Longitude', fontsize=12)
+ax1_ind.set_ylabel('Latitude', fontsize=12)
+ax1_ind.grid(True, alpha=0.3)
+ax1_ind.legend(loc='upper right', fontsize=11)
+ax1_ind.text(0.02, 0.02, 'Scale: ~2 km', transform=ax1_ind.transAxes, fontsize=10,
+            bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.8))
+plt.savefig('inye_area_clean_map.png', dpi=300, bbox_inches='tight', facecolor='white')
+
+# Enjema individual map
+fig2, ax2_ind = plt.subplots(1, 1, figsize=(12, 10))
+
+for desc in ['Enjema Surface Water', 'Enjema Ground Water']:
+    subset = enjema_gdf[enjema_gdf['Description'] == desc]
+    if len(subset) > 0:
+        subset.plot(ax=ax2_ind, 
+                   color=color_map[desc],
+                   marker=marker_map[desc],
+                   markersize=120,
+                   label=desc,
+                   alpha=0.8,
+                   edgecolor='black',
+                   linewidth=1.5)
+        
+        # Add labels
+        for idx, row in subset.iterrows():
+            ax2_ind.annotate(row['Sample'], 
+                           (row.geometry.x, row.geometry.y),
+                           xytext=(8, 8), 
+                           textcoords="offset points",
+                           fontsize=10,
+                           fontweight='bold',
+                           bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.9, edgecolor='black', linewidth=0.5))
+
+ax2_ind.set_xlim(enjema_gdf.total_bounds[0] - enjema_buffer, enjema_gdf.total_bounds[2] + enjema_buffer)
+ax2_ind.set_ylim(enjema_gdf.total_bounds[1] - enjema_buffer, enjema_gdf.total_bounds[3] + enjema_buffer)
+ax2_ind.set_title('Enjema Area: Water Sample Locations', fontsize=16, fontweight='bold')
+ax2_ind.set_xlabel('Longitude', fontsize=12)
+ax2_ind.set_ylabel('Latitude', fontsize=12)
+ax2_ind.grid(True, alpha=0.3)
+ax2_ind.legend(loc='upper right', fontsize=11)
+ax2_ind.text(0.02, 0.02, 'Scale: ~2 km', transform=ax2_ind.transAxes, fontsize=10,
+            bbox=dict(boxstyle="round,pad=0.3", facecolor='white', alpha=0.8))
+plt.savefig('enjema_area_clean_map.png', dpi=300, bbox_inches='tight', facecolor='white')
+
+print("Clean maps created successfully!")
+print("Files saved:")
+print("1. 'separate_areas_clean_map.png' - Both areas side by side (NO BACKGROUND MAP)")
+print("2. 'separate_areas_clean_map.pdf' - Both areas side by side (vector)")
+print("3. 'inye_area_clean_map.png' - Individual Inye area (NO BACKGROUND MAP)")
+print("4. 'enjema_area_clean_map.png' - Individual Enjema area (NO BACKGROUND MAP)")
+
+print(f"\nSample Counts:")
+print(f"Inye Area: {len(inye_gdf)} samples")
+print(f"Enjema Area: {len(enjema_gdf)} samples")
+
+plt.show()
