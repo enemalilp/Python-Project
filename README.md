@@ -1,30 +1,87 @@
-# Geospatial Data Analysis & Visualization
+# Python Data Analysis Portfolio
 
+##  Portfolio Overview
 
+A collection of three data analysis projects demonstrating diverse skills in data visualization, web applications, and real-time data processing. Each project tackles different domains and technical challenges.
 
-## Project Overview
+## Projects
 
-A Python-based geospatial data analysis project that combines mapping visualization with statistical bar charts to uncover patterns and insights from geographical data. This project demonstrates data cleaning, geospatial analysis, and multi-faceted data visualization techniques.
+### 1.  Geospatial Data Analysis & Mapping
+**Interactive mapping and statistical visualization of geographical data**
 
-##  Project Objectives
+- **Technologies**: GeoPandas, Matplotlib, Pandas
+- **Key Features**:
+  - Choropleth maps for regional data visualization
+  - Statistical bar charts for comparative analysis
+  - Spatial data processing and integration
+  - Automated reporting generation
 
-- **Geospatial Analysis**: Visualize data on interactive maps to identify regional patterns
-- **Statistical Visualization**: Create insightful bar charts for comparative analysis
-- **Data Integration**: Combine geographical and numerical data for comprehensive insights
-- **Automated Reporting**: Generate professional visualizations programmatically
+- **Skills Demonstrated**:
+  - Geospatial data manipulation
+  - Multi-format data visualization
+  - Coordinate reference system management
+  - Professional chart customization
 
-##  Technologies Used
+### 2. US Housing Market Analytics Dashboard
+**Interactive web dashboard for real estate market analysis**
 
-### Core Libraries
-- **Pandas**: Data manipulation and analysis
-- **Matplotlib**: Static visualizations and bar charts
-- **Seaborn**: Enhanced statistical visualizations
-- **GeoPandas**: Geospatial data handling and mapping
-- **Folium** (optional): Interactive web maps
+- **Technologies**: Shiny for Python, Plotly, Pandas
+- **Key Features**:
+  - Real-time housing market metrics
+  - Interactive state-level filtering
+  - Time-series analysis (2018-2024)
+  - Toggle between charts and data tables
 
-### Supporting Libraries
-- **NumPy**: Numerical computations
-- **Scipy**: Statistical analysis
-- **Contextily**: Basemap tiles for geographical context
+- **Metrics Tracked**:
+  - Median listing prices
+  - Home inventory levels
+  - New property listings
+  - Market trend analysis
+
+- **Skills Demonstrated**:
+  - Web application development
+  - Interactive dashboard creation
+  - Real-time data visualization
+  - User interface design
+
+### 3.  Cryptocurrency Market Data Analysis
+**Real-time cryptocurrency tracking and trend analysis**
+
+- **Technologies**: Requests, Seaborn, Pandas, CoinMarketCap API
+- **Key Features**:
+  - Automated API data collection
+  - Real-time price monitoring
+  - Multi-timeframe trend analysis
+  - Automated data pipeline
+
+- **Data Collected**:
+  - 15 major cryptocurrencies
+  - 333 data points over 5.5 hours
+  - Percentage changes across 6 timeframes
+  - Price movement visualization
+
+- **Skills Demonstrated**:
+  - API integration and automation
+  - Time-series analysis
+  - Financial data visualization
+  - Scheduled data collection
+
+##  Technology Stack Overview
+
+### Core Technologies
+| Technology | Project 1 | Project 2 | Project 3 |
+|------------|-----------|-----------|-----------|
+| **Pandas** | ✅ | ✅ | ✅ |
+| **Data Visualization** | ✅ | ✅ | ✅ |
+| **API Integration** | ❌ | ❌ | ✅ |
+| **Web Framework** | ❌ | ✅ | ❌ |
+| **Geospatial** | ✅ | ❌ | ❌ |
+
+ Visualization Libraries
+- **Matplotlib/Seaborn**: Static charts and statistical plots
+- **Plotly**: Interactive web-based visualizations
+- **GeoPandas**: Geographical mapping and spatial analysis
+- **Shiny Components**: Dashboard UI elements
+
 
 
